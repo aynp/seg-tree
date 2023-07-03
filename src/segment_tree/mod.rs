@@ -40,7 +40,7 @@ impl SegmentTree {
         return self.d[self.n + p];
     }
 
-    pub fn prod(&self, l: usize, r: usize) -> i32 {
+    pub fn get_range(&self, l: usize, r: usize) -> i32 {
         assert!(l <= r, "l must be less than or equal to r");
         assert!(r <= self.n, "r must be less than or equal to n");
 
@@ -82,7 +82,7 @@ impl SegmentTree {
         }
     }
 
-    pub fn all_prod(&self) -> i32 {
+    pub fn get_all(&self) -> i32 {
         return self.d[1];
     }
 

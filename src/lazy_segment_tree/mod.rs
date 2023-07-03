@@ -163,7 +163,7 @@ impl LazySegmentTree {
         }
     }
 
-    pub fn all_prod(&self) -> i32 {
+    pub fn get_all(&self) -> i32 {
         return self.d[1];
     }
 
