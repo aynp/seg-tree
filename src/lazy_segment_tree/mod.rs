@@ -68,6 +68,49 @@ impl LazySegmentTree {
         }
     }
 
+    pub fn prod(&mut self, l: usize, r: usize) -> i32 {
+        assert!(l <= r, "l must be less than or equal to r");
+        assert!(r <= self.n, "r must be less than or equal to n");
+
+        if l == r {
+            return 1;
+        }
+
+        let mut l = l;
+        let mut r = r;
+
+        l += self.size;
+        r += self.size;
+
+        for i in (1..=self.log).rev() {
+            if ((l >> i) << i) != l {
+                self.push(l >> i);
+            }
+            if ((r >> i) << i) != r {
+                self.push(r >> i);
+            }
+        }
+
+        let mut sml = 1;
+        let mut smr = 1;
+
+        while l < r {
+            if l & 1 != 0 {
+                sml = sml * self.d[l];
+                l += 1;
+            }
+            if r & 1 != 0 {
+                r -= 1;
+                smr = self.d[r] * smr;
+            }
+
+            l >>= 1;
+            r >>= 1;
+        }
+
+        return sml * smr;
+    }
+
     pub fn all_prod(&self) -> i32 {
         return self.d[1];
     }
