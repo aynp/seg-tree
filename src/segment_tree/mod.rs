@@ -40,6 +40,37 @@ impl SegmentTree {
         return self.d[self.n + p];
     }
 
+    pub fn prod(&self, l: usize, r: usize) -> i32 {
+        assert!(l <= r, "l must be less than or equal to r");
+        assert!(r <= self.n, "r must be less than or equal to n");
+
+        let mut sml = 0;
+        let mut smr = 0;
+
+        let mut l = l;
+        let mut r = r;
+
+        l += self.size;
+        r += self.size;
+
+        while l < r {
+            if l & 1 != 0 {
+                sml += self.d[l];
+                l += 1;
+            }
+
+            if r & 1 != 0 {
+                r -= 1;
+                smr += self.d[r];
+            }
+
+            l >>= 1;
+            r >>= 1;
+        }
+
+        return sml + smr;
+    }
+
     pub fn set(&mut self, mut p: usize, x: i32) {
         assert!(p < self.n, "p must be less than n");
 
