@@ -51,24 +51,7 @@ impl LazySegmentTree {
         return self.d[p];
     }
 
-    pub fn set(&mut self, p: usize, x: i32) {
-        assert!(p < self.n, "p must be less than n");
-
-        let mut p = p;
-        p += self.size;
-
-        for i in (1..=self.log).rev() {
-            self.push(p >> i);
-        }
-
-        self.d[p] = x;
-
-        for i in 1..=self.log {
-            self.update(p >> i);
-        }
-    }
-
-    pub fn prod(&mut self, l: usize, r: usize) -> i32 {
+    pub fn get_range(&mut self, l: usize, r: usize) -> i32 {
         assert!(l <= r, "l must be less than or equal to r");
         assert!(r <= self.n, "r must be less than or equal to n");
 
@@ -109,6 +92,75 @@ impl LazySegmentTree {
         }
 
         return sml * smr;
+    }
+
+    pub fn set(&mut self, p: usize, x: i32) {
+        assert!(p < self.n, "p must be less than n");
+
+        let mut p = p;
+        p += self.size;
+
+        for i in (1..=self.log).rev() {
+            self.push(p >> i);
+        }
+
+        self.d[p] = x;
+
+        for i in 1..=self.log {
+            self.update(p >> i);
+        }
+    }
+
+    pub fn set_range(&mut self, l: usize, r: usize) {
+        assert!(l <= r, "l must be less than or equal to r");
+        assert!(r <= self.n, "r must be less than or equal to n");
+
+        if l == r {
+            return;
+        }
+
+        let mut l = l;
+        let mut r = r;
+
+        l += self.size;
+        r += self.size;
+
+        for i in (1..=self.log).rev() {
+            if ((l >> i) << i) != l {
+                self.push(l >> i);
+            }
+            if ((r >> i) << i) != r {
+                self.push((r - 1) >> i);
+            }
+        }
+
+        {
+            let mut l2 = l;
+            let mut r2 = r;
+
+            while l2 < r2 {
+                if l2 & 1 != 0 {
+                    self.all_apply(l2, 1);
+                    l2 += 1;
+                }
+                if r2 & 1 != 0 {
+                    r2 -= 1;
+                    self.all_apply(r2, 1);
+                }
+
+                l2 >>= 1;
+                r2 >>= 1;
+            }
+        }
+
+        for i in 1..=self.log {
+            if ((l >> i) << i) != l {
+                self.update(l >> i);
+            }
+            if ((r >> i) << i) != r {
+                self.update((r - 1) >> i);
+            }
+        }
     }
 
     pub fn all_prod(&self) -> i32 {
