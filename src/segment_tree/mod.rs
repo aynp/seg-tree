@@ -7,12 +7,7 @@ pub struct SegmentTree {
 
 impl SegmentTree {
     pub fn new_with_size(n: usize) -> SegmentTree {
-        let log = (n as f32).log2().ceil() as usize;
-        let size = 1 << log;
-
-        let d = vec![0; 2 * size];
-
-        SegmentTree { n, size, log, d }
+        SegmentTree::new_from_vec(vec![0; n])
     }
 
     pub fn new_from_vec(a: Vec<i32>) -> SegmentTree {
@@ -71,6 +66,10 @@ impl SegmentTree {
         return sml + smr;
     }
 
+    pub fn get_all(&self) -> i32 {
+        return self.d[1];
+    }
+
     pub fn set(&mut self, mut p: usize, x: i32) {
         assert!(p < self.n, "p must be less than n");
 
@@ -82,11 +81,7 @@ impl SegmentTree {
         }
     }
 
-    pub fn get_all(&self) -> i32 {
-        return self.d[1];
-    }
-
-    pub fn update(&mut self, k: usize) {
+    fn update(&mut self, k: usize) {
         self.d[k] = self.d[2 * k] + self.d[2 * k + 1];
     }
 }

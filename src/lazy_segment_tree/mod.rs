@@ -17,7 +17,7 @@ impl LazySegmentTree {
         let size = 1 << log;
 
         let mut d = vec![0; 2 * size];
-        let mut lz = vec![0; size];
+        let lz = vec![0; size];
 
         for i in 0..n {
             d[size + i] = a[i];
@@ -94,6 +94,10 @@ impl LazySegmentTree {
         return sml * smr;
     }
 
+    pub fn get_all(&self) -> i32 {
+        return self.d[1];
+    }
+
     pub fn set(&mut self, p: usize, x: i32) {
         assert!(p < self.n, "p must be less than n");
 
@@ -161,10 +165,6 @@ impl LazySegmentTree {
                 self.update((r - 1) >> i);
             }
         }
-    }
-
-    pub fn get_all(&self) -> i32 {
-        return self.d[1];
     }
 
     fn update(&mut self, k: usize) {
